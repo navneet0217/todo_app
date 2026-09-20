@@ -1,0 +1,37 @@
+<div class="wrapper">
+  <h1>My Todos</h1>
+
+  <form class="add-form" (ngSubmit)="addTodo()">
+    <input
+      type="text"
+      placeholder="What needs to be done?"
+      [(ngModel)]="newTitle"
+      name="title"
+      required
+    />
+    <input
+      type="text"
+      placeholder="Description (optional)"
+      [(ngModel)]="newDescription"
+      name="description"
+    />
+    <button type="submit">Add</button>
+  </form>
+
+  <p *ngIf="error" class="error">{{ error }}</p>
+  <p *ngIf="loading">Loading...</p>
+
+  <ul class="todo-list" *ngIf="!loading">
+    <li *ngFor="let todo of todos" [class.completed]="todo.completed">
+      <label>
+        <input type="checkbox" [checked]="todo.completed" (change)="toggleTodo(todo)" />
+        <div>
+          <span class="title">{{ todo.title }}</span>
+          <span class="description" *ngIf="todo.description">{{ todo.description }}</span>
+        </div>
+      </label>
+      <button class="delete-btn" (click)="deleteTodo(todo)">✕</button>
+    </li>
+    <li *ngIf="todos.length === 0" class="empty">No todos yet — add one above!</li>
+  </ul>
+</div>
