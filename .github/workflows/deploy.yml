@@ -1,19 +1,36 @@
-name: Todo App CI
+name: Todo App CI/CD
 
 on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
       - name: Build backend image
-        run: docker build -t todo-backend ./backend
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/todo-backend:latest ./backend
+
+      - name: Push backend image
+        run: docker push ghcr.io/${{ github.repository_owner }}/todo-backend:latest
 
       - name: Build frontend image
-        run: docker build -t todo-frontend ./frontend
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/todo-frontend:latest ./frontend
+
+      - name: Push frontend image
+        run: docker push ghcr.io/${{ github.repository_owner }}/todo-frontend:latest
