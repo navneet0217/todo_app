@@ -13,7 +13,10 @@ app = FastAPI(title="Todo API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],
+    allow_origins=[
+    "http://localhost:4200",
+    "https://todoapp2026.duckdns.org",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

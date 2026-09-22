@@ -2,8 +2,8 @@ services:
   db:
     image: mysql:8.0
     environment:
-      MYSQL_DATABASE: todo_db
-      MYSQL_USER: todo_user
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
@@ -17,7 +17,7 @@ services:
           "-h",
           "localhost",
           "-u",
-          "todo_user",
+          "${DB_USER}",
           "-p${DB_PASSWORD}"
         ]
       interval: 5s
@@ -26,10 +26,13 @@ services:
       start_period: 10s
 
   backend:
-    build:
-      context: ./backend
+    image: ghcr.io/navneet0217/todo-backend:latest
     environment:
-      DATABASE_URL: mysql+pymysql://todo_user:${DB_PASSWORD}@db:3306/todo_db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
     depends_on:
       db:
         condition: service_healthy
@@ -37,8 +40,7 @@ services:
       - "8000:8000"
 
   frontend:
-    build:
-      context: ./frontend
+    image: ghcr.io/navneet0217/todo-frontend:latest
     ports:
       - "4200:80"
     depends_on:
@@ -46,4 +48,3 @@ services:
 
 volumes:
   db_data:
-
