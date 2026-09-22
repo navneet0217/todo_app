@@ -1,37 +1,73 @@
-<div class="wrapper">
-  <h1>My Todos</h1>
+<div class="page">
+  <div class="wrapper">
+    <header class="header">
+      <div class="header-text">
+        <h1>My Todos</h1>
+        <p class="date">{{ today | date: 'EEEE, d MMMM' }}</p>
+      </div>
+      <div class="progress" *ngIf="todos.length">
+        <span class="progress-label">{{ completedCount }} of {{ todos.length }} done</span>
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="progressPercent"></div>
+        </div>
+      </div>
+    </header>
 
-  <form class="add-form" (ngSubmit)="addTodo()">
-    <input
-      type="text"
-      placeholder="What needs to be done?"
-      [(ngModel)]="newTitle"
-      name="title"
-      required
-    />
-    <input
-      type="text"
-      placeholder="Description (optional)"
-      [(ngModel)]="newDescription"
-      name="description"
-    />
-    <button type="submit">Add</button>
-  </form>
+    <form class="add-form" (ngSubmit)="addTodo()">
+      <div class="add-fields">
+        <input
+          type="text"
+          placeholder="What needs to be done?"
+          [(ngModel)]="newTitle"
+          name="title"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Add a note (optional)"
+          [(ngModel)]="newDescription"
+          name="description"
+        />
+      </div>
+      <button type="submit" [disabled]="!newTitle.trim()">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        Add
+      </button>
+    </form>
 
-  <p *ngIf="error" class="error">{{ error }}</p>
-  <p *ngIf="loading">Loading...</p>
+    <p *ngIf="error" class="banner banner-error">{{ error }}</p>
+    <p *ngIf="loading" class="banner banner-loading">Fetching your list…</p>
 
-  <ul class="todo-list" *ngIf="!loading">
-    <li *ngFor="let todo of todos" [class.completed]="todo.completed">
-      <label>
-        <input type="checkbox" [checked]="todo.completed" (change)="toggleTodo(todo)" />
-        <div>
+    <ul class="todo-list" *ngIf="!loading && todos.length">
+      <li *ngFor="let todo of todos; trackBy: trackByTodoId" [class.completed]="todo.completed">
+        <label class="check">
+          <input type="checkbox" [checked]="todo.completed" (change)="toggleTodo(todo)" />
+          <span class="check-box">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path class="check-path" d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </label>
+        <div class="content">
           <span class="title">{{ todo.title }}</span>
           <span class="description" *ngIf="todo.description">{{ todo.description }}</span>
         </div>
-      </label>
-      <button class="delete-btn" (click)="deleteTodo(todo)">✕</button>
-    </li>
-    <li *ngIf="todos.length === 0" class="empty">No todos yet — add one above!</li>
-  </ul>
+        <button class="delete-btn" (click)="deleteTodo(todo)" aria-label="Delete todo">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </li>
+    </ul>
+
+    <div class="empty" *ngIf="!loading && !todos.length && !error">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <rect x="8" y="6" width="32" height="36" rx="3" stroke="currentColor" stroke-width="1.6" />
+        <path d="M16 16h16M16 23h16M16 30h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <p>Nothing on your list yet — add your first todo above.</p>
+    </div>
+  </div>
 </div>

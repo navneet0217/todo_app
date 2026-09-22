@@ -18,10 +18,24 @@ export class AppComponent implements OnInit {
   loading = false;
   error = '';
 
+  today = new Date();
+
   constructor(private todoService: TodoService) {}
 
   ngOnInit(): void {
     this.fetchTodos();
+  }
+
+  get completedCount(): number {
+    return this.todos.filter((t) => t.completed).length;
+  }
+
+  get progressPercent(): number {
+    return this.todos.length ? (this.completedCount / this.todos.length) * 100 : 0;
+  }
+
+  trackByTodoId(_index: number, todo: Todo): number | string {
+    return todo.id ?? todo.title;
   }
 
   fetchTodos(): void {
