@@ -1,6 +1,7 @@
 services:
   db:
     image: mysql:8.0
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -27,6 +28,7 @@ services:
 
   backend:
     image: ghcr.io/navneet0217/todo-backend:latest
+    restart: unless-stopped
     environment:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -41,6 +43,7 @@ services:
 
   frontend:
     image: ghcr.io/navneet0217/todo-frontend:latest
+    restart: unless-stopped
     ports:
       - "4200:80"
     depends_on:
