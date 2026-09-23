@@ -9,7 +9,10 @@ from .database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Todo API")
+app = FastAPI(
+    title="Todo API",
+    root_path="/api"
+)
 
 app.add_middleware(
     CORSMiddleware,
